@@ -1,8 +1,80 @@
 <template>
     <div class="home">
-        <el-input type="textarea" :rows="30" placeholder="Все статьи" @input="initialize" v-model="textarea"
-                  class="home__inputarea">
-        </el-input>
+        <div class="tile is-ancestor">
+            <div class="tile is-4 is-vertical is-parent">
+                <div class="tile is-child box">
+                    <p class="title has-text-centered">Статьи</p>
+                    <textarea type="textarea" :rows="8" placeholder="Скопируй статьи в это поле" v-model="textarea"
+                              class="textarea home__inputarea">
+                    </textarea>
+                    <button @click="initialize" class="button is-large is-fullwidth is-info is-outlined">Поехали
+                    </button>
+                </div>
+                <div class="tile is-child box content">
+                    <p class="title has-text-centered">Правила форматирования</p>
+                    <h6 class="has-text-centered">Для корректного парсинга, важно соблюдать следующую структуру
+                        статей:</h6>
+                    <div class="box">
+                        <p>
+                            Статья 1 "задвижка клиновая фланцевая"<br>
+                            задвижка клиновая фланцевая<strong>,</strong><br>
+                            задвижки клиновые фланцевые гост<strong>,</strong><br>
+                            задвижка стальная клиновая фланцевая<strong>,</strong><br>
+                            ... <strong>,</strong><br>
+                            задвижка стальная клиновая фланцевая цена
+                        </p>
+                    </div>
+                    <blockquote>
+                        <p>Отметим, что после каждого <code>ключа</code> должна ставиться запятая, в противном
+                            случае корректная работа приложения не гарантируется.</p>
+                        <p>После последнего <code>ключа</code>, запятую ставить <strong>не нужно</strong>.</p>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="tile is-parent content">
+                <div class="tile is-child table-part">
+                    <div>
+                        <p class="title has-text-centered">Предварительный результат парсинга</p>
+                        <blockquote>
+                            <p>После парсинга в этой части интерфейса отобразиться результат в виде таблицы.</p>
+                            <p>Данная таблица является лишь удобным инструментом для быстрой проверки правильности изначального текста статей.</p>
+                            <p>Проверив все элементы и убедившись, что все распарсилось правильно, нажмите кнопку далее.</p>
+                        </blockquote>
+                    </div>
+                    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                        <thead>
+                        <tr>
+                            <th>Номер статьи</th>
+                            <th>Заголовок статьи</th>
+                            <th>Ключи</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="article in resultArray">
+                            <th>{{article.number}}</th>
+                            <th>{{article.name}}</th>
+                            <th>
+                                <ul>
+                                    <li v-for="key in article.keys">{{key}}</li>
+                                </ul>
+                            </th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <transition
+                enter-active-class="animated slideInDown"
+                leave-active-class="animated slideInUp"
+        >
+            <div class="notification-container" v-show="showNotification">
+                <div class="notification is-info">
+                    <button class="delete" @click="showNotification = false"></button>
+                    Найдено {{resultArray.length}} статьи(ей)
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -18,7 +90,7 @@
             return {
                 textarea: '',
                 resultArray: [],
-                keyDivider: ','
+                showNotification: false,
             }
         },
         components: {
@@ -29,6 +101,7 @@
                 this.resultArray = [];// Первым делом очищаем наш основной массив от предыдущего использования
                 this.keyArray();
                 console.log(this.resultArray);
+                this.showNotify();
             },
             splitedText() { // Возвращает массив статей, разделенных по слову "статья"
                 let formatedText = this.textarea.toLowerCase().trim(); // Мы хотим работать со строкой в нижнем регистре и без пробелов
@@ -59,17 +132,21 @@
             },
             articleKeys(articlesTrimmed) {
                 let finalArr = [];
-                let withoutHead = function() { // Убираем заголовок и номер стать, оставляем толко ключи
+                let withoutHead = function () { // Убираем заголовок и номер стать, оставляем толко ключи
                     let result;
                     result = articlesTrimmed.split('"').pop();
                     return result;
                 };
-                let extractAllKeys = function() { // Извлекаем все ключи в каждой статье, предварительно разделенные ','
+                let extractAllKeys = function () { // Извлекаем все ключи в каждой статье, предварительно разделенные ','
                     let rawString = withoutHead();
                     let keysArr = rawString.split(",");
                     return keysArr;
                 };
                 return extractAllKeys();
+            },
+            showNotify() {
+                this.showNotification = true;
+                setTimeout(()=>{this.showNotification = false;},4000);
             }
         }
     }
@@ -77,12 +154,50 @@
 
 <style lang="scss" scoped>
     .home {
-        max-width: 1600px;
-        margin: 0 auto;
-        text-align: center;
+        position: relative;
+    }
+    .notification-container {
+        width: 250px;
+        position: absolute;
+        top: 10px;
+        left: 50%;
+    }
+    .table-part {
+        background: url(../assets/icons/table-solid.svg);
+        background-size: 30% 30%;
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+    .animated {
+        animation-duration: .75s;
+        animation-fill-mode: both;
+    }
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100px);
+            visibility: visible;
+        }
+
+        to {
+            transform: translateY(0);
+        }
     }
 
-    .home__inputarea {
-        width: 80%;
+    .slideInDown {
+        animation-name: slideInDown;
+    }
+    @keyframes slideInUp {
+        from {
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        to {
+            transform: translateY(-100px);
+        }
+    }
+
+    .slideInUp {
+        animation-name: slideInUp;
     }
 </style>
