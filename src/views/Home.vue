@@ -4,11 +4,14 @@
             <div class="tile is-4 is-vertical is-parent">
                 <div class="tile is-child box">
                     <p class="title has-text-centered">Статьи</p>
-                    <textarea type="textarea" :rows="8" placeholder="Скопируй статьи в это поле" v-model="textarea"
+                    <textarea type="textarea" :rows="8" placeholder="Скопируйте статьи в это поле" v-model="textarea"
                               class="textarea home__inputarea">
                     </textarea>
-                    <button @click="initialize" class="button is-large is-fullwidth is-info is-outlined">Поехали
-                    </button>
+                    <div class="buttons has-addons is-centered">
+                        <span class="button is-medium is-outlined is-danger" @click="resultArray = []; textarea = ''">очистить</span>
+                        <span class="button is-medium is-outlined is-info" @click="initialize">парсинг</span>
+                        <span class="button is-medium is-outlined is-success" :disabled="resultArray.length === 0" @click="commit">далее</span>
+                    </div>
                 </div>
                 <div class="tile is-child box content">
                     <p class="title has-text-centered">Правила форматирования</p>
@@ -33,7 +36,7 @@
             </div>
             <div class="tile is-parent content">
                 <div class="tile is-child table-part">
-                    <div>
+                    <div v-if="!resultArray.length > 0">
                         <p class="title has-text-centered">Предварительный результат парсинга</p>
                         <blockquote>
                             <p>После парсинга в этой части интерфейса отобразиться результат в виде таблицы.</p>
@@ -41,26 +44,28 @@
                             <p>Проверив все элементы и убедившись, что все распарсилось правильно, нажмите кнопку далее.</p>
                         </blockquote>
                     </div>
-                    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
-                        <thead>
-                        <tr>
-                            <th>Номер статьи</th>
-                            <th>Заголовок статьи</th>
-                            <th>Ключи</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="article in resultArray">
-                            <th>{{article.number}}</th>
-                            <th>{{article.name}}</th>
-                            <th>
-                                <ul>
-                                    <li v-for="key in article.keys">{{key}}</li>
-                                </ul>
-                            </th>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div v-else>
+                        <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                            <thead>
+                            <tr>
+                                <th>Номер статьи</th>
+                                <th>Заголовок статьи</th>
+                                <th>Ключи</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="article in resultArray">
+                                <th>{{article.number}}</th>
+                                <th>{{article.name}}</th>
+                                <th>
+                                    <ul>
+                                        <li v-for="key in article.keys">{{key}}</li>
+                                    </ul>
+                                </th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,9 +84,6 @@
 </template>
 
 <script>
-    // @ is an alias to /src
-    import HelloWorld from '@/components/HelloWorld.vue'
-
     const split = require('lodash.split');
 
     export default {
@@ -92,9 +94,6 @@
                 resultArray: [],
                 showNotification: false,
             }
-        },
-        components: {
-            HelloWorld
         },
         methods: {
             initialize() { // Данный метод срабатывает каждый раз при изменении текстового поля.
@@ -147,8 +146,13 @@
             showNotify() {
                 this.showNotification = true;
                 setTimeout(()=>{this.showNotification = false;},4000);
+            },
+            commit() {
+                this.$store.commit('addKeys', this.resultArray);
+                this.$router.push('about');
             }
-        }
+        },
+
     }
 </script>
 
@@ -171,6 +175,9 @@
     .animated {
         animation-duration: .75s;
         animation-fill-mode: both;
+    }
+    .buttons {
+        margin-top: 20px;
     }
     @keyframes slideInDown {
         from {
