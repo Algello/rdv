@@ -1,6 +1,6 @@
 <template>
     <div class="tags">
-        <Chip v-for="article in mainArray" :name="article.name"></Chip>
+        <Chip v-for="(article,index) in mainArray" :name="article.name" :index="index" :key="index"></Chip>
     </div>
 </template>
 

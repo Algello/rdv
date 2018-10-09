@@ -1,17 +1,19 @@
 <template>
     <div class="about">
         <div class="column">
-            <div class="box"><Chips></Chips></div>
+            <div class="box">
+                <Chips></Chips>
+            </div>
             <div class="columns">
-                <div class="column is-4"><div class="box"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore et fugiat illo
-                    molestias omnis recusandae tempora voluptates. At quo reiciendis repellat sapiente. Aliquam delectus
-                    distinctio ex expedita libero nemo nihil placeat repellendus voluptatem voluptatibus! Cupiditate
-                    error labore libero provident quis.</p></div>
+                <div class="column is-4">
+                    <div class="box">
+                        <article-editor v-if="this.$store.state.currentArticle !== null"></article-editor>
+                    </div>
                 </div>
-                <div class="column"><div class="box"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus alias amet
-                    assumenda deserunt est eveniet fuga harum hic illum libero molestias necessitatibus nihil nisi,
-                    nobis perspiciatis, possimus quas quidem quod quos reiciendis repellendus reprehenderit sint
-                    suscipit temporibus tenetur totam voluptates?</p></div>
+                <div class="column">
+                    <div class="box">
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -20,9 +22,23 @@
 
 <script>
     import Chips from '@/components/Chips.vue'
+    import ArticleEditor from '@/components/ArticleEditor.vue'
     export default {
         components: {
-            Chips
+            Chips,
+            ArticleEditor
+        },
+        computed: {
+            currentArticle() {
+                return this.$store.state.keysArray[this.$store.state.currentArticle];
+            }
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .no-dots {
+        list-style-type: none;
+    }
+</style>
+

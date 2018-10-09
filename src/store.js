@@ -5,12 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    keysArray: []
+    keysArray: [],
+    currentArticle: null
   },
   mutations: {
     addKeys(state,payload) {
       state.keysArray = payload;
-      console.log(state.keysArray);
+      // console.log(state.keysArray);
+    },
+    updateCurrentArticle(state,index) {
+      state.currentArticle = index;
     }
   },
   actions: {

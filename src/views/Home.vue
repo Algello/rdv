@@ -126,7 +126,7 @@
 
                 resultObj.name = articleName; // Получившиеся значения мы добавляем в изначальный объект
                 resultObj.number = articleNumber;
-                /*this.resultArray.push(resultObj); // Пушим наш объект в глобальный массив*/
+                resultObj.unique = articleName;
                 return resultObj;
             },
             articleKeys(articlesTrimmed) {
