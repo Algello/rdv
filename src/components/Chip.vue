@@ -1,5 +1,5 @@
 <template>
-    <span @click="updateArticle" class="tag">{{name}}</span>
+    <span @click="updateArticle" class="tag" :class="isActive">{{name}}</span>
 </template>
 
 <script>
@@ -12,12 +12,21 @@
         methods: {
             updateArticle() {
                 this.$store.commit('updateCurrentArticle', this.index);
-                console.log(this.$store.state.keysArray[this.$store.state.currentArticle]);
+            }
+        },
+        computed: {
+            isActive() {
+                if(this.index === this.$store.state.currentArticle) {
+                    return 'is-info';
+                }
             }
         }
     }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+    .tag {
+        cursor: pointer;
+        transition: all .3s;
+    }
 </style>

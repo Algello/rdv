@@ -12,7 +12,7 @@
                 </div>
                 <div class="column">
                     <div class="box">
-                        
+                        <preview v-if="this.$store.state.currentArticle !== null"></preview> 
                     </div>
                 </div>
             </div>
@@ -23,10 +23,12 @@
 <script>
     import Chips from '@/components/Chips.vue'
     import ArticleEditor from '@/components/ArticleEditor.vue'
+    import Preview from '@/components/Preview.vue'
     export default {
         components: {
             Chips,
-            ArticleEditor
+            ArticleEditor,
+            Preview
         },
         computed: {
             currentArticle() {
