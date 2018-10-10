@@ -5,7 +5,7 @@
                 <Chips></Chips>
             </div>
             <div class="columns">
-                <div class="column is-4">
+                <div class="column is-5">
                     <div class="box">
                         <article-editor v-if="this.$store.state.currentArticle !== null"></article-editor>
                     </div>
