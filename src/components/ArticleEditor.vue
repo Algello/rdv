@@ -1,41 +1,28 @@
 <template>
     <div class="content">
-        <h4>Статья №{{number}}: 
-        <span @dblclick = "name.edit = true"
-         v-show="name.edit == false">{{name.val}}
-         </span>
-        <span><input class="change-input" type="text"
-         v-show="name.edit == true"
-          v-model="name.val"
-          v-on:blur= "name.edit=false;"
-        @keyup.enter = "name.edit=false;"
-          ></span>
+        <h4>Статья №{{number}}:
+            <span><input class="change-input" type="text"
+                         v-model="name.val"
+            ></span>
         </h4>
         <hr>
         <p class="heading">
-            <span @dblclick = "headings[0].edit = true"
-         v-show="headings[0].edit == false">{{headings[0].val}}</span>
-        <span><input class="change-input--heading" type="text"
-         v-show="headings[0].edit == true"
-          v-model="headings[0].val"
-          v-on:blur= "headings[0].edit=false;"
-        @keyup.enter = "headings[0].edit=false;"
-          ></span>
+            <span><input class="change-input--heading" type="text"
+                         v-model="headings[0].val"
+            ></span>
         </p>
         <ul class="no-dots">
             <draggable @update="keysMoved" @add="keysMoved" v-model="keys1" class="dragArea" :options="{group:'keys'}">
-                <li class="heading" v-for="(element, index) in keys1">{{element}} <input v-model="keys1[index]"></li>
+                <li class="heading box" v-for="(element, index) in keys1"><input class="input"
+                                                                                 v-model="keys1[index]"><span><img
+                        class="drag-icon"
+                        src="../assets/icons/grip-horizontal-solid.svg" alt="drag&drop"></span></li>
             </draggable>
         </ul>
         <p class="heading">
-            <span @dblclick = "headings[1].edit = true"
-         v-show="headings[1].edit == false">{{headings[1].val}}</span>
-        <span><input class="change-input--heading" type="text"
-         v-show="headings[1].edit == true"
-          v-model="headings[1].val"
-          v-on:blur= "headings[1].edit=false;"
-        @keyup.enter = "headings[1].edit=false;"
-          ></span>
+            <span><input class="change-input--heading" type="text"
+                         v-model="headings[1].val"
+            ></span>
         </p>
         <ul class="no-dots">
             <draggable @update="keysMoved" @add="keysMoved" v-model="keys2" class="dragArea" :options="{group:'keys'}">
@@ -43,14 +30,9 @@
             </draggable>
         </ul>
         <p class="heading">
-            <span @dblclick = "headings[2].edit = true"
-         v-show="headings[2].edit == false">{{headings[2].val}}</span>
-        <span><input class="change-input--heading" type="text"
-         v-show="headings[2].edit == true"
-          v-model="headings[2].val"
-          v-on:blur= "headings[2].edit=false;"
-        @keyup.enter = "headings[2].edit=false;"
-          ></span>
+            <span><input class="change-input--heading" type="text"
+                         v-model="headings[2].val"
+            ></span>
         </p>
         <ul class="no-dots">
             <draggable @update="keysMoved" @add="keysMoved" v-model="keys3" class="dragArea" :options="{group:'keys'}">
@@ -63,84 +45,84 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+    import draggable from 'vuedraggable'
 
-export default {
-    data() {
-        return {
-            name: {
-                val: '',
-                edit: false
-            },
-            number: '',
-            unique: '',
-            headings: [
-                {
-                    val: '',
-                    edit: false
-                },
-                {
-                    val: '',
-                    edit: false
-                },
-                {
-                    val: '',
-                    edit: false
-                }
-            ],
-            keys1: [],
-            keys2: [],
-            keys3: [],
-            myId: null
-        }
-    },
-    components: {
-        draggable
-    },
-    computed: {
-        moddedArticle() {
-            return this.$store.state.keysArray[this.$store.state.currentArticle]
-        },
-        id() {
-            return this.$store.state.currentArticle;
-        },
-        updatedArticle() {
+    export default {
+        data() {
             return {
-                keys: this.keys1.concat(this.keys2, this.keys3),
+                name: {
+                    val: '',
+                    edit: false
+                },
+                number: '',
+                unique: '',
+                headings: [
+                    {
+                        val: '',
+                        edit: false
+                    },
+                    {
+                        val: '',
+                        edit: false
+                    },
+                    {
+                        val: '',
+                        edit: false
+                    }
+                ],
+                keys1: [],
+                keys2: [],
+                keys3: [],
+                myId: null
+            }
+        },
+        components: {
+            draggable
+        },
+        computed: {
+            moddedArticle() {
+                return this.$store.state.keysArray[this.$store.state.currentArticle]
+            },
+            id() {
+                return this.$store.state.currentArticle;
+            },
+            updatedArticle() {
+                return {
+                    keys: this.keys1.concat(this.keys2, this.keys3),
+
+                }
+            }
+        },
+        methods: {
+            update() {
+                this.myId = this.id;
+                this.name.val = this.moddedArticle.name;
+                this.number = this.moddedArticle.number;
+                this.unique = this.moddedArticle.unique;
+                this.headings.forEach((e, i) => {
+                    e.val = this.moddedArticle.keys[i];
+                });
+                this.keys1 = this.moddedArticle.keys.slice(3, 5);
+                this.keys2 = this.moddedArticle.keys.slice(5, 7);
+                this.keys3 = this.moddedArticle.keys.slice(7, 10);
+            },
+            keysMoved(e) {
 
             }
-        }
-    },
-    methods: {
-        update() {
-            this.myId = this.id;
-            this.name.val = this.moddedArticle.name;
-            this.number = this.moddedArticle.number;
-            this.unique = this.moddedArticle.unique;
-            this.headings.forEach((e,i)=>{
-                e.val = this.moddedArticle.keys[i];
-            });
-            this.keys1 = this.moddedArticle.keys.slice(3,5);
-            this.keys2 = this.moddedArticle.keys.slice(5,7);
-            this.keys3 = this.moddedArticle.keys.slice(7,10);
         },
-        keysMoved(e) {
-            
-        }
-    },
-    watch: {
-        moddedArticle(val) {
+        watch: {
+            moddedArticle(val) {
+                this.update();
+            }
+        },
+        mounted() {
             this.update();
-        }
-    },
-    mounted() {
-        this.update();
-    },
-    updated() {
-        
-    }
+        },
+        updated() {
 
-}
+        }
+
+    }
 </script>
 
 <style lang="scss" scoped>
@@ -160,6 +142,7 @@ export default {
             outline: none;
         }
     }
+
     .change-input--heading {
         margin: 0;
         padding: 0;
@@ -175,6 +158,31 @@ export default {
         &:focus {
             outline: none;
         }
+    }
+
+    li.heading {
+        cursor: move; /* fallback if grab cursor is unsupported */
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+        &:active {
+            cursor: grabbing;
+            cursor: -moz-grabbing;
+            cursor: -webkit-grabbing;
+        }
+    }
+
+    li input.input {
+        width: 90%;
+    }
+    .drag-icon {
+        width: 20px;
+        height: 20px;
+    }
+    li.heading.box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 </style>
 
