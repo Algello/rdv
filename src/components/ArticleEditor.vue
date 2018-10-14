@@ -2,18 +2,18 @@
     <div class="content">
         <h4>Статья №{{number}}:
             <span><input class="change-input" type="text"
-                         v-model="name.val"
+                         v-model="name"
             ></span>
         </h4>
         <hr>
         <p class="heading">
             <span><input class="change-input--heading" type="text"
-                         v-model="headings[0].val"
+                         v-model="headings[0]"
             ></span>
         </p>
         <ul class="no-dots">
             <draggable @update="keysMoved" @add="keysMoved" v-model="keys1" class="dragArea" :options="{group:'keys'}">
-                <li class="heading box" v-for="(element, index) in keys1"><input class="input"
+                <li class="heading box" v-for="(element, index) in keys1"><input class="change-input--heading"
                                                                                  v-model="keys1[index]"><span><img
                         class="drag-icon"
                         src="../assets/icons/grip-horizontal-solid.svg" alt="drag&drop"></span></li>
@@ -21,22 +21,28 @@
         </ul>
         <p class="heading">
             <span><input class="change-input--heading" type="text"
-                         v-model="headings[1].val"
+                         v-model="headings[1]"
             ></span>
         </p>
         <ul class="no-dots">
             <draggable @update="keysMoved" @add="keysMoved" v-model="keys2" class="dragArea" :options="{group:'keys'}">
-                <li class="heading" v-for="element in keys2">{{element}}</li>
+                <li class="heading box" v-for="(element, index) in keys2"><input class="change-input--heading"
+                                                                                 v-model="keys2[index]"><span><img
+                        class="drag-icon"
+                        src="../assets/icons/grip-horizontal-solid.svg" alt="drag&drop"></span></li>
             </draggable>
         </ul>
         <p class="heading">
             <span><input class="change-input--heading" type="text"
-                         v-model="headings[2].val"
+                         v-model="headings[2]"
             ></span>
         </p>
         <ul class="no-dots">
             <draggable @update="keysMoved" @add="keysMoved" v-model="keys3" class="dragArea" :options="{group:'keys'}">
-                <li class="heading" v-for="element in keys3">{{element}}</li>
+                <li class="heading box" v-for="(element, index) in keys3"><input class="change-input--heading"
+                                                                                 v-model="keys3[index]"><span><img
+                        class="drag-icon"
+                        src="../assets/icons/grip-horizontal-solid.svg" alt="drag&drop"></span></li>
             </draggable>
         </ul>
         <hr>
@@ -50,26 +56,10 @@
     export default {
         data() {
             return {
-                name: {
-                    val: '',
-                    edit: false
-                },
+                name: '',
                 number: '',
                 unique: '',
-                headings: [
-                    {
-                        val: '',
-                        edit: false
-                    },
-                    {
-                        val: '',
-                        edit: false
-                    },
-                    {
-                        val: '',
-                        edit: false
-                    }
-                ],
+                headings: [],
                 keys1: [],
                 keys2: [],
                 keys3: [],
@@ -88,20 +78,20 @@
             },
             updatedArticle() {
                 return {
-                    keys: this.keys1.concat(this.keys2, this.keys3),
-
+                    keys: this.headings.concat(this.keys1, this.keys2, this.keys3),
+                    name: this.name,
+                    number: this.number,
+                    unique: this.unique
                 }
             }
         },
         methods: {
             update() {
                 this.myId = this.id;
-                this.name.val = this.moddedArticle.name;
+                this.name = this.moddedArticle.name;
                 this.number = this.moddedArticle.number;
                 this.unique = this.moddedArticle.unique;
-                this.headings.forEach((e, i) => {
-                    e.val = this.moddedArticle.keys[i];
-                });
+                this.headings = this.moddedArticle.keys.slice(0,3);
                 this.keys1 = this.moddedArticle.keys.slice(3, 5);
                 this.keys2 = this.moddedArticle.keys.slice(5, 7);
                 this.keys3 = this.moddedArticle.keys.slice(7, 10);
@@ -113,15 +103,14 @@
         watch: {
             moddedArticle(val) {
                 this.update();
+            },
+            updatedArticle(val) {
+                this.$store.commit('articleUpdate', val);
             }
         },
         mounted() {
             this.update();
-        },
-        updated() {
-
         }
-
     }
 </script>
 
@@ -172,8 +161,9 @@
         }
     }
 
-    li input.input {
+    li input.change-input--heading {
         width: 90%;
+        height: 30px;
     }
     .drag-icon {
         width: 20px;

@@ -4,20 +4,20 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    keysArray: [],
-    currentArticle: null
-  },
-  mutations: {
-    addKeys(state,payload) {
-      state.keysArray = payload;
-      // console.log(state.keysArray);
+    state: {
+        keysArray: [],
+        currentArticle: null
     },
-    updateCurrentArticle(state,index) {
-      state.currentArticle = index;
-    }
-  },
-  actions: {
+    mutations: {
+        addKeys(state, payload) {
+            state.keysArray = payload;
+        },
+        updateCurrentArticle(state, index) {
+            state.currentArticle = index;
+        },
+        articleUpdate(state, newArticle) {
 
-  }
+        }
+    },
+    actions: {}
 })
